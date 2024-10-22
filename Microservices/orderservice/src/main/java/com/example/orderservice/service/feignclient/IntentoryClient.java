@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "inventoryservice", url = "http://localhost:9094")
+@FeignClient(name = "inventoryservice", url = "http://localhost:8888/inventory")
 public interface IntentoryClient {
 	
 	@GetMapping(path = "/api/inventory/items/{itemId}/available")
