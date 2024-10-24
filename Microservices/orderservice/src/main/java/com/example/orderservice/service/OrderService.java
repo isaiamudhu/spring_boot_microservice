@@ -29,29 +29,33 @@ public class OrderService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private IntentoryClient inventoryClient;
 
 	@Autowired
 	DiscoveryClient discoveryClient;
 
-	//@CircuitBreaker(name = "inventoryservice", fallbackMethod = "defaultMethod")
+	@Autowired
+	AuthService authService;
+
+	// @CircuitBreaker(name = "inventoryservice", fallbackMethod = "defaultMethod")
 	public Order placeOrder(Order order) {
+		String authorization = "Basic dXNlcjpwYXNzd29yZA==";
+
 		// Check inventory for each item
 		for (int i = 0; i < order.getItemIds().size(); i++) {
 			Long itemId = order.getItemIds().get(i);
 			int quantity = order.getItemQuantities().get(i);
-			
-			Boolean isAvailable = inventoryClient.checkInventory(itemId, quantity);
 
+			Boolean isAvailable = inventoryClient.checkInventory(authorization, itemId, quantity);
 
 			if (isAvailable == null || !isAvailable) {
 				log.error("item not available");
 				throw new RuntimeException("Item ID " + itemId + " is not available in the required quantity.");
 			}
 
-			inventoryClient.reserveQuantity(itemId, quantity);
+			inventoryClient.reserveQuantity(authorization, itemId, quantity);
 //			// Reserve the inventory
 //			restTemplate.put("http://localhost:9094/api/inventory/items/" + itemId + "/reserve?quantity=" + quantity,
 //					null);
@@ -101,7 +105,7 @@ public class OrderService {
 
 	public Order defaultMethod(Exception e) {
 		log.info("called from circuit breaker {}", ExceptionUtils.getStackTrace(e));
-		//send the order details to inventory service using queue
+		// send the order details to inventory service using queue
 		return new Order();
 		// logic as per your business needs
 	}

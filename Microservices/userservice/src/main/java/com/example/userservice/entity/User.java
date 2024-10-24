@@ -1,5 +1,7 @@
 package com.example.userservice.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,6 @@ public class User {
 
 	private String email;
 
-	private String role;
+	private List<String> roles;
 
 }
