@@ -6,6 +6,7 @@ import com.example.inventoryservice.repository.InventoryRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class InventoryService {
     }
 
     // Check if an item is available in the required quantity
+    @Cacheable(cacheNames = {"cache1"}, key = "itemId")
     public boolean isItemAvailable(Long itemId, int requiredQuantity) {
     	log.info("request received for checking inventory item with id {}", itemId);
         Optional<InventoryItem> item = inventoryRepository.findById(itemId);
