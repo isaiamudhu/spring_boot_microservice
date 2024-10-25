@@ -31,9 +31,9 @@ public class InventoryService {
     }
 
     // Check if an item is available in the required quantity
-    @Cacheable(cacheNames = {"cache1"}, key = "itemId")
+    @Cacheable(value = "cache1", key = "#a0")
     public boolean isItemAvailable(Long itemId, int requiredQuantity) {
-    	log.info("request received for checking inventory item with id {}", itemId);
+        log.info("request received for checking inventory item with id {}", itemId);
         Optional<InventoryItem> item = inventoryRepository.findById(itemId);
         return item.map(inventoryItem -> inventoryItem.getQuantity() >= requiredQuantity).orElse(false);
     }
